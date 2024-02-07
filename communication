@@ -1,0 +1,46 @@
+clear; close all; clc;
+
+M = 8;
+OverSampling = 20;
+frq = 100.0E3;
+amplitude = 10.0;
+
+fs = OverSampling * max(frq);
+N = 2^M;
+t = 0:1/fs:(N-1)/fs;
+
+sig = amplitude * cos(2.0 * pi * frq * t);
+
+plot(t, sig)
+xlabel("Time (sec)")
+ylabel("Amplitude")
+title("Carrier Time Domain")
+
+T = 50;
+t = 0:1/fs:T - 1/fs;
+N = length(t);
+frq = 0.5;
+amplitude = 0.5;
+sig = amplitude * cos(2.0 * pi * frq * t);
+
+bb_frq_1 = 0.05;
+bb_frq_2 = 0.075;
+
+bb_amp_1 = 0.5;
+bb_amp_2 = 0.25;
+ka = 1.0;
+
+% Generate even and odd indices
+even_indices = 1:2:length(t);
+odd_indices = 2:2:length(t);
+
+bb_sig_1 = bb_amp_1 * cos(2.0 * pi * bb_frq_1 * t(even_indices));
+bb_sig_2 = bb_amp_2 * cos(2.0 * pi * bb_frq_2 * t(odd_indices));
+bb_sig = [bb_sig_2 bb_sig_1];
+
+modulated = (1 + ka * bb_sig);
+figure, plot(t, modulated)
+
+title("Amplitude Modulation Time Domain")
+xlabel("Time (secs)")
+ylabel("Amplitude")
